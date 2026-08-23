@@ -1,0 +1,36 @@
+ [project]
+name = "dochelper"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "aiofiles>=25.1.0",
+    "aiomysql>=0.3.2",
+    "cryptography>=50.0.0",
+    "datasets>=5.0.1",
+    "fastapi>=0.141.1",
+    "flagembedding>=1.3.3",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "langchain>=1.3.15",
+    "langchain-community>=0.4.2",
+    "langchain-openai>=1.5.0",
+    "langgraph>=1.2.11",
+    "minio>=7.2.20",
+    "modelscope>=1.39.1",
+    "peft>=0.20.0",
+    "pydantic-settings>=2.15.0",
+    "pymilvus[model]==2.6.8",
+    "pymongo>=4.17.0",
+    "python-dotenv>=1.2.2",
+    "python-multipart>=0.0.32",
+    "sqlalchemy>=2.0.52",
+    "tavily-python>=0.7.27",
+    "torch>=2.13.0",
+    "torchaudio>=2.11.0",
+    "torchvision>=0.28.0",
+    "uvicorn>=0.52.1",
+    "transformers==4.44.2",
+    "tokenizers==0.19.1",
+    "FlagEmbedding==1.3.5",
+    "datetime",
+]

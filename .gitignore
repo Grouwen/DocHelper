@@ -1,0 +1,15 @@
+.venv/
+.idea/
+uv.lock
+
+
+doc/
+.env
+
+# out_put 下3个子目录：保留目录本身，忽略所有内容
+out_put/docs/*
+!out_put/docs/.gitkeep
+out_put/unzips/*
+!out_put/unzips/.gitkeep
+out_put/zips/*
+!out_put/zips/.gitkeep

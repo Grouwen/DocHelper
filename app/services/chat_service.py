@@ -100,7 +100,7 @@ async def _save_ai_message(user_message_id:str,session_id:str,
 
     # 定义entity
     retrieval = None
-    if not useful or not body_names:
+    if useful or body_names:
         retrieval = Retrieval(
             original_query=user_input,
             status="success",

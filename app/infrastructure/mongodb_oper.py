@@ -54,5 +54,5 @@ class MongoDBOper:
         """
         通过session_id更新session最后活动时间
         """
-        await self.db["chat_session"].update_one({"session_id":session_id},
+        await self.db["chat_session"].update_one({"_id":ObjectId(session_id)},
                                                  {"$set":{"last_active":datetime.now()}})

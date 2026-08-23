@@ -16,4 +16,3 @@ class QueryGraphContext(TypedDict):
     tavily_oper: TavilyOper
     llm_model:BaseChatModel
     reranker_model:FlagReranker
-    mongodb_oper: MongoDBOper

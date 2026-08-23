@@ -9,7 +9,8 @@ def init_llm_model()->BaseChatModel:
         model_provider="openai",
         api_key=llm_config.llm_api_key,
         base_url=llm_config.llm_base_url,
-        temperature=0
+        temperature=0,
+        streaming=True
     )
     return llm
 

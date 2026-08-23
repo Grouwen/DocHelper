@@ -41,7 +41,11 @@ class MongoDBOper:
         """
         通过session_id判断是否有session记录，有返回True，没有返回False
         """
-        session = await self.db["chat_session"].find_one({"_id": ObjectId(session_id)})
+        try:
+            session_id = ObjectId(session_id)
+        except:
+            return False
+        session = await self.db["chat_session"].find_one({"_id": session_id})
         if session:
             return True
         return False

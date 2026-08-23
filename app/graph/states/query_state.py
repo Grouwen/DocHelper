@@ -10,8 +10,7 @@ class QueryState(TypedDict):
     task_id: str  # 唯一任务id
 
     graph_start_time:datetime # 计时回复时间
-    session_id: str # 对话session的id
-    user_message_id: str # 用户消息的id
+    graph_end_time:datetime # 计时回复结束时间
 
     user_input:str # 用户输入
     history_list:List[History] # 聊天记录
@@ -32,4 +31,7 @@ class QueryState(TypedDict):
 
     cross_encoder_results:List[str] # cross_encoder精排返回的数据
 
-    reply:str
+    final_context:str # llm最终的上下文
+    final_reply:str # llm最终回复内容
+    input_tokens:int # 提示词token数
+    output_tokens:int # llm输出token数

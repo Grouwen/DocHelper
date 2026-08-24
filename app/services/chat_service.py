@@ -1,7 +1,8 @@
-import time
+import asyncio
 import uuid
+from asyncio import Queue, CancelledError
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, AsyncIterator
 
 from langchain_core.language_models import BaseChatModel
 from FlagEmbedding import FlagReranker
@@ -18,7 +19,11 @@ from app.infrastructure.milvus_oper import MilvusOper
 from app.infrastructure.mongodb_oper import MongoDBOper
 from app.infrastructure.mysql_oper import MysqlOper
 from app.infrastructure.tavily_oper import TavilyOper
+from app.logr.logr import get_logger
+from app.util.sse_util import put_critical, put_nowait, to_sse, STEP_LABELS
 
+
+logger = get_logger("ChatService")
 
 async def _get_histories_update_last_active(mongodb_oper:MongoDBOper, chat_request: ChatRequest) -> Dict[str,Any]:
     if not chat_request.session_id:
@@ -127,7 +132,54 @@ async def _save_ai_message(user_message_id:str,session_id:str,
     # 保存
     await mongodb_oper.multiterm_insert("chat_message", assistant_message)
 
+async def _run_graph_and_save(state: QueryState,context: QueryGraphContext,
+                              ueue: Queue,session_id: str,user_message_id: str,
+                              mongodb_oper: MongoDBOper,) -> None:
+    """
+    后台运行graph，并保存ai_message
+    """
+    final_state: QueryState| None = None
+    try:
+        async for part in query_app.astream(
+            input=state,
+            context=context,
+            stream_mode=["updates", "values", "messages"],
+            version="v2",
+        ):
+            ptype = part["type"]
 
+            if ptype == "updates":
+                # 节点完成 -> 推送一步进度
+                for node_name in part["data"]:
+                    put_nowait(ueue, to_sse("step", {
+                        "node": node_name,
+                        "message": STEP_LABELS.get(node_name, node_name),
+                        "status": "done",
+                    }))
+
+            elif ptype == "messages":
+                # 仅转发node_generate_answer的信息
+                msg_chunk, metadata = part["data"]
+                content = getattr(msg_chunk, "content", "") or ""
+                if content and metadata.get("langgraph_node") == "node_generate_answer":
+                    put_nowait(ueue, to_sse("token", {"content": content}))
+
+            elif ptype == "values":
+                # 最后的state
+                final_state = part["data"]
+
+        # 图执行完成 -> 落库（即使客户端已断开也会执行）
+        await _save_ai_message(user_message_id, session_id, final_state, mongodb_oper)
+        put_critical(ueue, to_sse("done", {
+            "session_id": session_id,
+            "reply": final_state.get("final_reply", ""),
+        }))
+
+    except Exception as e:
+        logger.exception("chat 图执行失败 session_id=%s: %s", session_id, e)
+        put_critical(ueue, to_sse("error", {"message": str(e)}))
+    finally:
+        put_critical(ueue, None)
 
 class ChatService:
     def __init__(self,embedding_oper:EmbeddingOper,milvus_oper:MilvusOper,reranker_model:FlagReranker,
@@ -140,6 +192,7 @@ class ChatService:
         self.tavily_oper = tavily_oper
         self.mongodb_oper = mongodb_oper
 
+    # 非流式调用chat，仅保存
     async def chat(self,chat_request:ChatRequest):
         # 获取聊天记录和session_id
         histories_session_id = await _get_histories_update_last_active(self.mongodb_oper,chat_request)
@@ -149,6 +202,7 @@ class ChatService:
         # 保存用户消息
         user_message_id = await _save_user_message(self.mongodb_oper,session_id,chat_request)
 
+        # 调用graph
         state = QueryState(
             task_id=uuid.uuid4(),
             user_input=chat_request.message,
@@ -166,6 +220,62 @@ class ChatService:
             reranker_model=self.reranker_model,
             tavily_oper=self.tavily_oper
         )
-
         final_state = await query_app.ainvoke(input=state,context=context)
+
+        # 保存
         await _save_ai_message(user_message_id,session_id,final_state,self.mongodb_oper)
+
+    async def chat_stream(self,chat_request:ChatRequest) -> AsyncIterator[str]:
+
+        # 1. 会话与历史
+        histories_session_id = await _get_histories_update_last_active(self.mongodb_oper, chat_request)
+        histories = histories_session_id["histories"]
+        session_id = histories_session_id["session_id"]
+
+        # 2. 先落用户消息
+        user_message_id = await _save_user_message(self.mongodb_oper, session_id, chat_request)
+
+        # 3. 构造图输入
+        state = QueryState(
+            task_id=str(uuid.uuid4()),
+            user_input=chat_request.message,
+            history_list=histories,
+            graph_start_time=datetime.now(),
+            web_search_results=[],
+            hyde_recall_results=[],
+            hybrid_recall_results=[],
+        )
+        context = QueryGraphContext(
+            embedding_oper=self.embedding_oper,
+            milvus_oper=self.milvus_oper,
+            mysql_oper=self.mysql_oper,
+            llm_model=self.llm_model,
+            reranker_model=self.reranker_model,
+            tavily_oper=self.tavily_oper,
+        )
+
+        # 使用queue分离sse与graph，确保即使客户端断开连接依旧写入数据库
+        # 后台任务强引用集合，避免任务被 GC 提前回收
+        _background_tasks: set = set()
+        queue: Queue = Queue(maxsize=4096)
+        task = asyncio.create_task(
+            _run_graph_and_save(state, context, queue, session_id, user_message_id, self.mongodb_oper)
+        )
+        _background_tasks.add(task)
+        task.add_done_callback(_background_tasks.discard)
+
+        # 先回送会话信息，前端可尽早绑定
+        yield to_sse("start", {"session_id": session_id, "user_message_id": user_message_id})
+
+        #转发后台产出为 SSE
+        try:
+            while True:
+                item = await queue.get()
+                if item is None:
+                    break
+                yield item
+                if item.startswith("event: done\n") or item.startswith("event: error\n"):
+                    break
+        except CancelledError:
+            logger.info("客户端断开连接，后台任务继续执行并落库 session_id=%s", session_id)
+            raise

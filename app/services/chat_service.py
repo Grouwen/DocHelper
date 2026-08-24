@@ -20,7 +20,7 @@ from app.infrastructure.mongodb_oper import MongoDBOper
 from app.infrastructure.mysql_oper import MysqlOper
 from app.infrastructure.tavily_oper import TavilyOper
 from app.logr.logr import get_logger
-from app.util.sse_util import put_critical, put_nowait, to_sse, STEP_LABELS
+from app.util.sse_util import put_critical, put_nowait, to_sse, QUERY_STEP_LABELS
 
 
 logger = get_logger("ChatService")
@@ -50,7 +50,7 @@ async def _get_histories_update_last_active(mongodb_oper:MongoDBOper, chat_reque
     # 更新last_active
     await mongodb_oper.update_session_last_active(session_id=chat_request.session_id)
 
-    histories = await mongodb_oper.find_history(session_id=chat_request.session_id)
+    histories = await mongodb_oper.find_message_by_session_id(session_id=chat_request.session_id)
     return {
         "session_id": chat_request.session_id,
         "histories": histories,
@@ -93,10 +93,10 @@ async def _save_ai_message(user_message_id:str,session_id:str,
     hybrid_recall_results = state.get("hybrid_recall_results",[])
     web_search_results = state.get("web_search_results",[])
 
-    final_context = state["final_context"]
-    assistant_content = state["final_reply"]
-    prompt_tokens = state["input_tokens"]
-    output_tokens = state["output_tokens"]
+    final_context = state.get("final_context","")
+    assistant_content = state.get("final_reply","")
+    prompt_tokens = state.get("input_tokens","")
+    output_tokens = state.get("output_tokens","")
 
     # 处理数据
     chunks = []
@@ -153,7 +153,7 @@ async def _run_graph_and_save(state: QueryState,context: QueryGraphContext,
                 for node_name in part["data"]:
                     put_nowait(ueue, to_sse("step", {
                         "node": node_name,
-                        "message": STEP_LABELS.get(node_name, node_name),
+                        "message": QUERY_STEP_LABELS.get(node_name, node_name),
                         "status": "done",
                     }))
 

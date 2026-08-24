@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 from pymilvus.model.hybrid import BGEM3EmbeddingFunction
 
 import app.model.embedding_model as embedding_model
-from app.exception.oper_exception_hook import oper_exception_hook
+from app.exception.hooks.oper_exception_hook import oper_exception_hook
 
 
 class EmbeddingOper:

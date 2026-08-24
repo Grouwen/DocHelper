@@ -4,8 +4,8 @@ from typing import List, Dict, Any
 
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 
-from app.constants.constants import CHUNK_MAX_SIZE
-from app.graph.node_hook import node_hook
+from app.constants.constants import CHUNK_MAX_SIZE, CHUNK_OVERLAP
+from app.exception.hooks.node_hook import node_hook
 
 from app.graph.states.import_state import ImportState
 from app.domain.chunk import Chunk
@@ -43,7 +43,7 @@ def split_md_by_title(md_content: str) -> List[Dict[str, Any]]:
 def split_long_text(chunks: List[Dict[str, Any]], max_len: int = CHUNK_MAX_SIZE) -> List[Dict[str, Any]]:
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=max_len,  # 每块最大 500 字符
-        chunk_overlap=50,  # 块间重叠 50 字符
+        chunk_overlap=CHUNK_OVERLAP,  # 块间重叠 50 字符
         separators=["\n\n", "\n", "。", "！", "？", " ", ""]  # 针对中文优化的分隔符
     )
 

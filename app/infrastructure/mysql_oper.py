@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.entity.mysql.base import Base
 from app.entity.mysql.chunk import MysqlChunk
 from app.entity.mysql.file import MysqlFile
-from app.exception.oper_exception_hook import oper_exception_hook
+from app.exception.hooks.oper_exception_hook import oper_exception_hook
 
 
 class MysqlOper:

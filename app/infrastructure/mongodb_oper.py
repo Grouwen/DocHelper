@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime
 from typing import List
 
@@ -7,10 +6,7 @@ from bson.errors import InvalidId
 from pydantic import BaseModel
 from pymongo import AsyncMongoClient
 
-from app.client.mongodb_client import init_mongodb_client
-from app.entity.mongo.chat_message import ChatMessage, Retrieval
-from app.entity.mongo.chat_session import ChatSession
-from app.exception.oper_exception_hook import oper_exception_hook
+from app.exception.hooks.oper_exception_hook import oper_exception_hook
 
 
 class MongoDBOper:
@@ -32,7 +28,7 @@ class MongoDBOper:
         return ids
 
     @oper_exception_hook("mongodb")
-    async def find_history(self,session_id:str,limit:int=10):
+    async def find_message_by_session_id(self,session_id:str,limit:int=10):
         """
         查找聊天记录，返回最近limit条
         """
@@ -62,3 +58,7 @@ class MongoDBOper:
         """
         await self.db["chat_session"].update_one({"_id":ObjectId(session_id)},
                                                  {"$set":{"last_active":datetime.now()}})
+
+    @oper_exception_hook("mongodb")
+    async def get_history(self,limit:int=50):
+        return await self.db["chat_session"].find().sort("last_active",-1).to_list(limit)

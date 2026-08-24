@@ -1,5 +1,5 @@
 from app.domain.recall_chunk import RecallChunk
-from app.graph.node_hook import node_hook
+from app.exception.hooks.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 
 @node_hook

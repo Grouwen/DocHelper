@@ -5,7 +5,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from langgraph.runtime import Runtime
 
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.node_hook import node_hook
+from app.exception.hooks.node_hook import node_hook
 
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node

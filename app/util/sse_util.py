@@ -3,7 +3,7 @@ from asyncio import Queue, QueueFull, QueueEmpty
 from typing import Any, Dict
 
 # LangGraph 节点名 -> 面向用户的步骤描述
-STEP_LABELS: Dict[str, str] = {
+QUERY_STEP_LABELS: Dict[str, str] = {
     "node_entry": "初始化请求",
     "node_coreference_resolution": "指代消解与意图识别",
     "node_mainbody_match": "文档主体匹配",
@@ -14,6 +14,16 @@ STEP_LABELS: Dict[str, str] = {
     "node_rrf_rerank": "RRF 粗排",
     "node_bge_rerank": "精排重排",
     "node_generate_answer": "生成回答",
+}
+
+IMPORT_STEP_LABELS: Dict[str, str] = {
+    "node_entry": "文件校验",
+    "node_pdf_to_md": "PDF 解析(MinerU)",
+    "node_md_img": "图片处理与上传",
+    "node_document_split": "文档分块",
+    "node_identification_main_body": "主体识别",
+    "node_bge_embedding": "向量化",
+    "node_save": "数据入库",
 }
 
 def to_sse(event: str, data: Any) -> str:

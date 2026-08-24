@@ -3,10 +3,9 @@ from typing import List
 
 from langgraph.runtime import Runtime
 
-from app.domain.recall_chunk import RecallChunk
 from app.entity.mysql.chunk import MysqlChunk
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.node_hook import node_hook
+from app.exception.hooks.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node
 

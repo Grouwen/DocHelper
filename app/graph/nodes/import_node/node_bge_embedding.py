@@ -4,7 +4,7 @@ import copy
 from langgraph.runtime import Runtime
 
 from app.graph.context.import_context import ImportGraphContext
-from app.graph.node_hook import node_hook
+from app.exception.hooks.node_hook import node_hook
 from app.graph.states.import_state import ImportState
 
 
@@ -30,9 +30,7 @@ def node_bge_embedding(state:ImportState,runtime:Runtime[ImportGraphContext]):
         embedding_list = [f"面包屑路径：{chunk.title_breadcrumb_path}。标题：{chunk.title}。内容：{chunk.content}"
                           for chunk in batch_chunks]
 
-        print("start，all：",len(chunks),"action:",batch_size)
         embeddings = embedding_oper.embedding_texts(embedding_list)
-        print("end")
         dense_vecs = embeddings.get("dense", [])
         sparse_vecs = embeddings.get("sparse", [])
 

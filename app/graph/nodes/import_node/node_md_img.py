@@ -6,7 +6,7 @@ import shutil
 import uuid
 from pathlib import Path
 import base64 as _base64
-from typing import List, Dict, Any
+from typing import List, Dict
 
 import aiofiles
 from langchain_core.language_models import BaseChatModel
@@ -16,7 +16,7 @@ from langgraph.runtime import Runtime
 
 from app.config.minio_config import minio_config
 from app.graph.context.import_context import ImportGraphContext
-from app.graph.node_hook import node_hook
+from app.exception.hooks.node_hook import node_hook
 from app.infrastructure.minio_oper import MinioOper
 from app.constants.constants import MAX_BASE64_LEN, ALLOWED_IMAGE_SUFFIX
 from app.graph.states.import_state import ImportState
@@ -296,27 +296,33 @@ async def node_md_img(state:ImportState,runtime:Runtime[ImportGraphContext]):
     # 有的md中的图片不会使用，筛选出使用的图片，并将md文件中的相对路径转为绝对路径保存
     images = scan_images(md_content,Path(md_file_path).parent/"images")
 
-    # 调用大模型生成图片的描述信息
-    image_summaries = await generate_summaries(md_content, images,vm_model)
+    try:
+        # 调用大模型生成图片的描述信息
+        image_summaries = await generate_summaries(md_content, images,vm_model)
 
-    # 回填alt到md_content
-    md_content = rewrite_md_content(md_content,image_summaries=image_summaries)
+        # 回填alt到md_content
+        md_content = rewrite_md_content(md_content,image_summaries=image_summaries)
 
-    # 上传图片到minio
-    upload_image_url = await upload_image_to_minio(state["unique_file_name"], images, minio_oper)
+        # 上传图片到minio
+        upload_image_url = await upload_image_to_minio(state["unique_file_name"], images, minio_oper)
 
-    # 回填url到md_content
-    md_content = rewrite_md_content(md_content, image_urls=upload_image_url)
+        # 回填url到md_content
+        md_content = rewrite_md_content(md_content, image_urls=upload_image_url)
 
-    # 保存到本地以_new.md命名
-    save_path = Path(str(md_file_path).replace(Path(md_file_path).suffix, "_new.md"))
-    async with aiofiles.open(save_path, mode="w", encoding="utf-8") as f:
-        await f.write(md_content)
+        # 保存到本地以_new.md命名
+        save_path = Path(str(md_file_path).replace(Path(md_file_path).suffix, "_new.md"))
+        async with aiofiles.open(save_path, mode="w", encoding="utf-8") as f:
+            await f.write(md_content)
 
-    return {
-        "md_content":md_content,
-        "md_file_path":save_path
-    }
+        return {
+            "md_content":md_content,
+            "md_file_path":save_path
+        }
+    except Exception as e:
+        return {
+            "md_content":md_content,
+            "md_file_path":md_file_path
+        }
 
 
 if __name__ == '__main__':

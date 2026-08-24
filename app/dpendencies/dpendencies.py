@@ -9,6 +9,7 @@ from app.infrastructure.mongodb_oper import MongoDBOper
 from app.infrastructure.mysql_oper import MysqlOper
 from app.infrastructure.tavily_oper import TavilyOper
 from app.services.chat_service import ChatService
+from app.services.history_service import HistoryService
 from app.services.upload_service import UploadService
 
 async def get_httpx_oper(request: Request):
@@ -65,3 +66,7 @@ async def get_chat_service(embedding_oper: EmbeddingOper = Depends(get_embedding
                            reranker_model = Depends(get_reranker_model),
                            mongodb_oper = Depends(get_mongodb_oper)):
     return ChatService(embedding_oper,milvus_oper,reranker_model,mysql_oper,llm_model,tavily_oper,mongodb_oper)
+
+
+async def get_history_service(mongodb_oper: MongoDBOper = Depends(get_mongodb_oper)):
+    return HistoryService(mongodb_oper)

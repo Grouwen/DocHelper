@@ -4,7 +4,7 @@ from typing import List, Dict
 from tavily import AsyncTavilyClient
 
 from app.client.tavily_client import init_tavily_client
-from app.exception.oper_exception_hook import oper_exception_hook
+from app.exception.hooks.oper_exception_hook import oper_exception_hook
 
 
 class TavilyOper:

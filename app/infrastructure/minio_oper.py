@@ -1,11 +1,10 @@
 import asyncio
 
 from minio import Minio
-from minio.deleteobjects import DeleteObject, DeleteError
+from minio.deleteobjects import DeleteObject
 
-from app.client.minio_client import init_minio_client
 from app.config.minio_config import minio_config
-from app.exception.oper_exception_hook import oper_exception_hook
+from app.exception.hooks.oper_exception_hook import oper_exception_hook
 
 
 class MinioOper:

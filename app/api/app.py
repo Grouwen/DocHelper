@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from starlette.middleware.cors import CORSMiddleware
 
-from app.api.router.chat_router import router
+from app.api.router import router
 from app.client.httpx_client import init_httpx_client, close_httpx_client
 from app.client.milvus_client import init_milvus_client, close_milvus_client
 from app.client.minio_client import init_minio_client

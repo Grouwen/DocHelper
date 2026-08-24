@@ -2,8 +2,7 @@ from typing import Dict, Any, Optional
 import httpx
 from httpx import Response, AsyncClient
 
-from app.exception.oper_exception_hook import oper_exception_hook
-from app.logr.logr import get_logger
+from app.exception.hooks.oper_exception_hook import oper_exception_hook
 
 
 class HttpxOper:

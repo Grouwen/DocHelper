@@ -1,7 +1,7 @@
 # 流程入口：参数初始化、输入校验
 from pathlib import Path
 
-from app.graph.node_hook import node_hook
+from app.exception.hooks.node_hook import node_hook
 from app.graph.states.import_state import ImportState
 
 

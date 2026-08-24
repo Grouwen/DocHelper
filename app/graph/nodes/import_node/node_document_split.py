@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 
 from app.constants.constants import CHUNK_MAX_SIZE
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 
 from app.graph.states.import_state import ImportState
 from app.domain.chunk import Chunk

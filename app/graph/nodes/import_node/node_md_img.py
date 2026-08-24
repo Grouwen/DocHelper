@@ -16,7 +16,7 @@ from langgraph.runtime import Runtime
 
 from app.config.minio_config import minio_config
 from app.graph.context.import_context import ImportGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.infrastructure.minio_oper import MinioOper
 from app.constants.constants import MAX_BASE64_LEN, ALLOWED_IMAGE_SUFFIX
 from app.graph.states.import_state import ImportState
@@ -262,8 +262,8 @@ async def upload_image_to_minio(unique_file_name, images:Dict[str, str],minio_op
 
     upload_dir = minio_config.img_dir+ "/" +unique_file_name_path.stem
 
-    # 上传之前先清理
-    await minio_oper.remove_dir(upload_dir)
+    # 上传之前先清理，必须去除"/"否则查不到
+    await minio_oper.remove_dir(upload_dir[1:])
 
     # 上传
     upload_image_url:Dict[str,str] = {}

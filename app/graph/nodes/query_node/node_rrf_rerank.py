@@ -1,11 +1,11 @@
 from app.domain.recall_chunk import RecallChunk
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 
 @node_hook
 def node_rrf_rerank(state:QueryState):
-    hyde_recall_results = state["hyde_recall_results"]
-    hybrid_recall_results = state["hybrid_recall_results"]
+    hyde_recall_results = state.get("hyde_recall_results",[])
+    hybrid_recall_results = state.get("hybrid_recall_results",[])
 
     k = 60
     scores = {}

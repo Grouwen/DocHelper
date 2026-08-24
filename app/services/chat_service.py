@@ -89,9 +89,9 @@ async def _save_ai_message(user_message_id:str,session_id:str,
     rewritten_query = state.get("rewritten_query","")
     main_body_list = state.get("main_body_list",[])
 
-    hyde_recall_results = state["hyde_recall_results"]
-    hybrid_recall_results = state["hybrid_recall_results"]
-    web_search_results = state["web_search_results"]
+    hyde_recall_results = state.get("hyde_recall_results",[])
+    hybrid_recall_results = state.get("hybrid_recall_results",[])
+    web_search_results = state.get("web_search_results",[])
 
     final_context = state["final_context"]
     assistant_content = state["final_reply"]
@@ -207,10 +207,7 @@ class ChatService:
             task_id=uuid.uuid4(),
             user_input=chat_request.message,
             history_list=histories,
-            graph_start_time=datetime.now(),
-            web_search_results=[],
-            hyde_recall_results=[],
-            hybrid_recall_results=[],
+            graph_start_time=datetime.now()
         )
         context = QueryGraphContext(
             embedding_oper=self.embedding_oper,

@@ -4,7 +4,7 @@ import copy
 from langgraph.runtime import Runtime
 
 from app.graph.context.import_context import ImportGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.import_state import ImportState
 
 

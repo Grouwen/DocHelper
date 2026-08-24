@@ -13,7 +13,7 @@ from langgraph.runtime import Runtime
 from app.config.mineru_config import mineru_config
 from app.constants.constants import OUT_PUT_ZIPS_PATH, OUT_PUT_UNZIPS_PATH
 from app.graph.context.import_context import ImportGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.import_state import ImportState
 from app.logr.logr import get_logger
 from app.infrastructure.httpx_oper import HttpxOper

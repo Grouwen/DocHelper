@@ -6,7 +6,7 @@ from langgraph.runtime import Runtime
 from app.domain.recall_chunk import RecallChunk
 from app.entity.mysql.chunk import MysqlChunk
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node
 
@@ -86,20 +86,25 @@ async def node_bge_rerank(state:QueryState,runtime:Runtime[QueryGraphContext]):
     """
     rrf_results = state["rrf_results"]
     rewritten_query = state["rewritten_query"]
-    web_search_results = state["web_search_results"]
+    web_search_results = state.get("web_search_results",[])
     mysql_oper = runtime.context["mysql_oper"]
     reranker_model = runtime.context["reranker_model"]
 
-    # 获取mysql中chunk数据
-    mysql_query_result:List[MysqlChunk] = await mysql_oper.query_chunk_by_id([rrf_result["chunk_id"] for rrf_result in rrf_results])
+    try:
+        # 获取mysql中chunk数据
+        mysql_query_result:List[MysqlChunk] = await mysql_oper.query_chunk_by_id([rrf_result["chunk_id"] for rrf_result in rrf_results])
 
-    # 合并相同title_breadcrumb_path
-    same_breadcrumb_list = merge_by_breadcrumb(mysql_query_result)
+        # 合并相同title_breadcrumb_path
+        same_breadcrumb_list = merge_by_breadcrumb(mysql_query_result)
 
-    # 使用bge-reranker
-    query_and_chunk = [[rewritten_query,f"面包屑路径：{result.title_breadcrumb_path}，内容：{result.content}"] for result in same_breadcrumb_list]
-    query_and_chunk.extend([[rewritten_query, result.content] for result in web_search_results])
-    scores =await asyncio.to_thread(reranker_model.compute_score,query_and_chunk)
+        # 使用bge-reranker
+        query_and_chunk = [[rewritten_query,f"面包屑路径：{result.title_breadcrumb_path}，内容：{result.content}"] for result in same_breadcrumb_list]
+        query_and_chunk.extend([[rewritten_query, result.content] for result in web_search_results])
+        scores =await asyncio.to_thread(reranker_model.compute_score,query_and_chunk)
+    except Exception as e:
+        return {
+            "cross_encoder_results": []
+        }
 
     # 动态截取topk
     topk = dynamic_topk(scores,0,4,10,5,True)

@@ -5,7 +5,7 @@ from langgraph.runtime import Runtime
 
 from app.domain.recall_chunk import RecallChunk
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node
 
@@ -19,15 +19,25 @@ async def node_hybrid_match(state:QueryState,runtime:Runtime[QueryGraphContext])
     embedding_oper = runtime.context["embedding_oper"]
     milvus_oper = runtime.context["milvus_oper"]
 
-    # 向量化用户提问
-    body_vectors =await embedding_oper.aembedding_texts([rewritten_query])
-    dense_vec = body_vectors.get("dense", [])[0]
-    sparse_vec = body_vectors.get("sparse", [])[0]
+    try:
+        # 如果file_ids为空，则降级从所有文件中匹配
+        filter = ""
+        if file_ids:
+            filter = f'file_id in {file_ids}'
 
-    # 构建search_request对象，进行向量检索
-    reqs = milvus_oper.build_search_request(dense_vec, sparse_vec)
-    milvus_results = await milvus_oper.hybrid_search("chunk", reqs,
-                                              filter=f'file_id in {file_ids}',limit=20)
+        # 向量化用户提问
+        body_vectors =await embedding_oper.aembedding_texts([rewritten_query])
+        dense_vec = body_vectors.get("dense", [])[0]
+        sparse_vec = body_vectors.get("sparse", [])[0]
+
+        # 构建search_request对象，进行向量检索
+        reqs = milvus_oper.build_search_request(dense_vec, sparse_vec)
+        milvus_results = await milvus_oper.hybrid_search("chunk", reqs,
+                                                  filter=filter,limit=20)
+    except Exception as e:
+        return {
+            "hybrid_recall_results": []
+        }
 
     # 转为recall_chunk
     hybrid_recall_results: List[RecallChunk] = []

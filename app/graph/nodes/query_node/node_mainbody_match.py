@@ -5,7 +5,7 @@ from langgraph.runtime import Runtime
 
 from app.domain.recall_main_body import RecallMainBody
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node
 
@@ -39,17 +39,25 @@ async def node_mainbody_match(state:QueryState,runtime:Runtime[QueryGraphContext
     embedding_oper = runtime.context["embedding_oper"]
     milvus_oper = runtime.context["milvus_oper"]
 
-    # 向量化llm提取出的main_body
-    body_vectors =await embedding_oper.aembedding_texts(body_names)
-    dense_vecs = body_vectors.get("dense", [])
-    sparse_vecs = body_vectors.get("sparse", [])
 
-    # 单独召回
-    dense_results = await milvus_oper.search("main_body",anns_field="dense_vector",
-                                       dense_vector_list=dense_vecs,output_fields=["file_id"])
+    try:
+        # 向量化llm提取出的main_body
+        body_vectors =await embedding_oper.aembedding_texts(body_names)
+        dense_vecs = body_vectors.get("dense", [])
+        sparse_vecs = body_vectors.get("sparse", [])
 
-    sparse_results = await milvus_oper.search("main_body", anns_field="sparse_vector",
-                                             sparse_vector_list=sparse_vecs, output_fields=["file_id"])
+        # 单独召回
+        dense_results = await milvus_oper.search("main_body",anns_field="dense_vector",
+                                           dense_vector_list=dense_vecs,output_fields=["file_id"])
+
+        sparse_results = await milvus_oper.search("main_body", anns_field="sparse_vector",
+                                                 sparse_vector_list=sparse_vecs, output_fields=["file_id"])
+    except Exception as e:
+        return {
+            "need_web_search": True,
+            "main_body_list": [],
+            "file_ids": [],
+        }
 
     # 处理结果，封装统一处理
     search_results_dense: List[Dict[str, List[RecallMainBody]]] = []
@@ -97,7 +105,7 @@ async def node_mainbody_match(state:QueryState,runtime:Runtime[QueryGraphContext
     return {
         "need_web_search":start_web_search,
         "main_body_list":main_body_list,
-        "file_ids":file_ids
+        "file_ids":list(file_ids)
     }
 
 if __name__ == '__main__':

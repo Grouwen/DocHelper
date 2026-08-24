@@ -1,5 +1,5 @@
 # 流程入口：参数初始化、输入校验
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 
 @node_hook

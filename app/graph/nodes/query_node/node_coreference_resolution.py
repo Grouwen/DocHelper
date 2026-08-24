@@ -5,7 +5,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from langgraph.runtime import Runtime
 
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node
@@ -21,10 +21,18 @@ async def node_coreference_resolution(state:QueryState,runtime:Runtime[QueryGrap
     history_list = state["history_list"]
     llm_model = runtime.context["llm_model"]
 
-    # 调用大模型，获取结果
-    prompt = await load_prompt("coreference_resolution.jinja2", history=history_list, user_input=user_input)
-    chain = llm_model | JsonOutputParser()
-    llm_resp = await chain.ainvoke(prompt)
+    # 降级处理，直接回复
+    try:
+        # 调用大模型，获取结果
+        prompt = await load_prompt("coreference_resolution.jinja2", history=history_list, user_input=user_input)
+        chain = llm_model | JsonOutputParser()
+        llm_resp = await chain.ainvoke(prompt)
+    except Exception as e:
+        return {
+            "useful": False,
+            "rewritten_query": "",
+            "body_names": [],
+        }
 
     # 返回结果
     useful = llm_resp["useful"]

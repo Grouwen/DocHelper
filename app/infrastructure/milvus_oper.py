@@ -3,11 +3,14 @@ from typing import List, Any, Dict, Tuple
 from pydantic import BaseModel
 from pymilvus import AsyncMilvusClient, AnnSearchRequest, WeightedRanker, RRFRanker
 
+from app.exception.oper_exception_hook import oper_exception_hook
+
 
 class MilvusOper:
     def __init__(self, milvus_client: AsyncMilvusClient):
         self.milvus_client = milvus_client
 
+    @oper_exception_hook("milvus")
     async def save(self, collection_name: str,
                    entities: BaseModel | List[BaseModel],
                    auto_id: bool = False,
@@ -32,6 +35,7 @@ class MilvusOper:
 
         return res
 
+    @oper_exception_hook("milvus")
     async def hybrid_search(self, collection_name: str,
                             reqs: List[AnnSearchRequest],
                             ranker_weights: Tuple[float, float] = (0.8, 0.2),
@@ -40,7 +44,6 @@ class MilvusOper:
                             filter: str = "") -> List[List[dict]]:
         # 仅能查询单条
         rerank = WeightedRanker(ranker_weights[0], ranker_weights[1], norm_score=norm_score)
-        # rerank = RRFRanker(k=40)
 
         res = await self.milvus_client.hybrid_search(
             collection_name=collection_name,
@@ -53,6 +56,7 @@ class MilvusOper:
 
         return res
 
+    @oper_exception_hook("milvus")
     async def search(self, collection_name: str,
                      anns_field: str,
                      dense_vector_list:List[List[float]]|None = None,

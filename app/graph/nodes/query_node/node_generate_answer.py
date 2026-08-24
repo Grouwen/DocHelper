@@ -7,8 +7,9 @@ from langgraph.runtime import Runtime
 
 from app.domain.recall_chunk import RecallChunk
 from app.entity.mongo.chat_message import ChatMessage, Retrieval
+from app.exception.exceptions import LLMError
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 from app.infrastructure.mongodb_oper import MongoDBOper
 from app.util.prompt_util import load_prompt
@@ -41,14 +42,17 @@ async def node_generate_answer(state:QueryState,runtime:Runtime[QueryGraphContex
     rewritten_query = state["rewritten_query"]
     llm_model = runtime.context["llm_model"]
 
-    # 判断useful
-    if not useful or not body_names:
-        prompt = await load_prompt("unuseful_answer.jinja2",user_input=user_input)
-        return await ask_llm_get_metadata(llm_model, prompt)
+    try:
+        # 判断useful
+        if not useful or not body_names:
+            prompt = await load_prompt("unuseful_answer.jinja2",user_input=user_input)
+            return await ask_llm_get_metadata(llm_model, prompt)
 
-    # 处理提示词
-    context = "\n".join(f"文档{index}：{result}" for index, result in enumerate(cross_encoder_results, start=1))
-    # 加载提示词
-    prompt = await load_prompt("generate_answer.jinja2",
-                      context=context,rewritten_query=rewritten_query)
-    return await ask_llm_get_metadata(llm_model,prompt)
+        # 处理提示词
+        context = "\n".join(f"文档{index}：{result}" for index, result in enumerate(cross_encoder_results, start=1))
+        # 加载提示词
+        prompt = await load_prompt("generate_answer.jinja2",
+                          context=context,rewritten_query=rewritten_query)
+        return await ask_llm_get_metadata(llm_model,prompt)
+    except Exception as e:
+        raise LLMError(f"LLM 流式调用失败: {e}", e) from e

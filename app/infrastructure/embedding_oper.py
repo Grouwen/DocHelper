@@ -4,12 +4,14 @@ from typing import List, Dict, Any
 from pymilvus.model.hybrid import BGEM3EmbeddingFunction
 
 import app.model.embedding_model as embedding_model
+from app.exception.oper_exception_hook import oper_exception_hook
 
 
 class EmbeddingOper:
     def __init__(self,embedding_model:BGEM3EmbeddingFunction):
         self.embedding_model = embedding_model
 
+    @oper_exception_hook("embedding")
     def embedding_texts(self, texts: List[str]) -> Dict[str, Any]:
         embeddings = self.embedding_model.encode_documents(texts)
 
@@ -30,6 +32,7 @@ class EmbeddingOper:
             "sparse": sparse_list
         }
 
+    @oper_exception_hook("embedding")
     async def aembedding_texts(self, texts: List[str]) -> Dict[str, Any]:
         return await asyncio.to_thread(self.embedding_texts, texts)
 

@@ -3,12 +3,14 @@ from datetime import datetime
 from typing import List
 
 from bson import ObjectId
+from bson.errors import InvalidId
 from pydantic import BaseModel
 from pymongo import AsyncMongoClient
 
 from app.client.mongodb_client import init_mongodb_client
 from app.entity.mongo.chat_message import ChatMessage, Retrieval
 from app.entity.mongo.chat_session import ChatSession
+from app.exception.oper_exception_hook import oper_exception_hook
 
 
 class MongoDBOper:
@@ -16,6 +18,7 @@ class MongoDBOper:
         self.mongodb_client = mongodb_client
         self.db = self.mongodb_client["dochelper"]
 
+    @oper_exception_hook("mongodb")
     async def multiterm_insert(self,collection_name:str,
                                entities:List[BaseModel]|BaseModel)->List[str]:
         """
@@ -28,6 +31,7 @@ class MongoDBOper:
         ids = [str(result) for result in results.inserted_ids]
         return ids
 
+    @oper_exception_hook("mongodb")
     async def find_history(self,session_id:str,limit:int=10):
         """
         查找聊天记录，返回最近limit条
@@ -37,19 +41,21 @@ class MongoDBOper:
                            .to_list(length=limit))
         return histories
 
+    @oper_exception_hook("mongodb")
     async def find_session_by_id(self,session_id:str)->bool:
         """
         通过session_id判断是否有session记录，有返回True，没有返回False
         """
         try:
             session_id = ObjectId(session_id)
-        except:
+        except InvalidId:
             return False
         session = await self.db["chat_session"].find_one({"_id": session_id})
         if session:
             return True
         return False
 
+    @oper_exception_hook("mongodb")
     async def update_session_last_active(self,session_id:str):
         """
         通过session_id更新session最后活动时间

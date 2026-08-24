@@ -5,7 +5,7 @@ from langgraph.runtime import Runtime
 
 from app.domain.recall_chunk import RecallChunk
 from app.graph.context.query_context import QueryGraphContext
-from app.graph.hook import node_hook
+from app.graph.node_hook import node_hook
 from app.graph.states.query_state import QueryState
 from app.test.test_graph import test_query_node
 
@@ -17,9 +17,12 @@ async def node_web_search(state:QueryState,runtime:Runtime[QueryGraphContext]):
     rewritten_query = state["rewritten_query"]
     tavily_oper = runtime.context["tavily_oper"]
 
-    web_results = await tavily_oper.search_web(rewritten_query,limit=10)
-    # [{'url': 'https://www.itheat.com/index.php/view/27703.html', 'title': '...', 'content': '...', 'score': 0.7653308, 'raw_content': None, 'id': 'c57e8b-00'},
-    # {'url': 'https://www.itheat.com/index.php/view/27703.html', 'title': '...', 'content': '...', 'score': 0.7653308, 'raw_content': None, 'id': 'b17l2y-04'}]
+    try:
+        web_results = await tavily_oper.search_web(rewritten_query,limit=10)
+    except Exception as e:
+        return {
+            "web_search_results":[]
+        }
 
     # 转换数据格式
     web_search_results:List[RecallChunk] = []

@@ -176,3 +176,7 @@ out_put/unzips/*
 !out_put/unzips/.gitkeep
 out_put/zips/*
 !out_put/zips/.gitkeep
+
+project_init/docker-compose.yml
+project_init/initdb/sql.sql
+project_init/volumes/*

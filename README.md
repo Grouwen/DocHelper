@@ -102,3 +102,9 @@ prompts/              # Jinja2 提示词模板
 | `MINERU_`    | MineruConfig         | MinerU PDF 解析服务 |
 | `TAVILY_`    | TavilyConfig         | Tavily 搜索 API   |
 
+## Docker-compose与Mysql初始化
+
+在project_init中有[docker-compose-example.yml](project_init/docker-compose-example.yml)和[sql-example.sql](project_init/sql-example.sql)
+1. 在docker-compose中你可以配置密码，将占位符`CHANGE_YOUR_PASSWORD`替换为你的密码。
+2. 在sql-example.sql中创建了一个供远程连接的用户dochelper，同样的，你可以将占位符`CHANGE_YOUR_PASSWORD`替换为你的密码
+3. 将sql-example.sql改完后放到initdb文件夹下，即可初始化数据库

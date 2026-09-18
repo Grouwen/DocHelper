@@ -108,3 +108,42 @@ prompts/              # Jinja2 提示词模板
 1. 在docker-compose中你可以配置密码，将占位符`CHANGE_YOUR_PASSWORD`替换为你的密码。
 2. 在sql-example.sql中创建了一个供远程连接的用户dochelper，同样的，你可以将占位符`CHANGE_YOUR_PASSWORD`替换为你的密码
 3. 将sql-example.sql改完后放到initdb文件夹下，即可初始化数据库
+
+## 关于量化
+1. testset.json存储问题与答案，quantification_doc存储测试用的文档。
+2. 如果要获取量化数据，请运行evaluate_retrieval.py
+
+## 量化数据
+逐条结果（top-3）
+
+#1   垂直旋转显示器需要顺时针旋转多少度？                       baseline[未命中]  full[未命中]
+
+#2   显示器支持通过哪几种线缆连接计算机？                       baseline[命中]  full[命中]
+
+#3   查看显示器 S/N 号有哪几种方式？                       baseline[命中]  full[命中]
+
+#4   显示器的游戏辅助包含哪些功能？                          baseline[命中]  full[命中]
+
+#5   显示器的护眼模式如何开启？                            baseline[命中]  full[命中]
+
+#6   显示器的恢复出厂设置会怎样？                           baseline[命中]  full[命中]
+
+#7   安装显示器底座支架前需要注意什么？                        baseline[命中]  full[命中]
+
+#8   指纹电源键可以实现什么功能？                           baseline[未命中]  full[命中]
+
+#9   充电指示灯白色常亮表示什么？                           baseline[未命中]  full[命中]
+
+#10  如何将 F1、F2 键切换为功能键模式？                     baseline[命中]  full[命中]
+
+#11  触摸板三指向上滑动有什么作用？                          baseline[命中]  full[命中]
+
+#12  触摸板双指上下滑动有什么作用？                          baseline[命中]  full[命中]
+
+#13  计算机强制关机如何操作？                             baseline[命中]  full[命中]
+
+...
+
+纯混合检索   Hit Rate@3 = 53/60 = 88.3%
+
+完整检索链路 Hit Rate@3 = 57/60 = 95.0%

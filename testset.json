@@ -1,0 +1,317 @@
+[
+  {
+    "question": "垂直旋转显示器需要顺时针旋转多少度？",
+    "gold_keywords": ["顺时针旋转90°"],
+    "history": []
+  },
+  {
+    "question": "显示器支持通过哪几种线缆连接计算机？",
+    "gold_keywords": ["HDMI/DP/VGA"],
+    "history": []
+  },
+  {
+    "question": "查看显示器 S/N 号有哪几种方式？",
+    "gold_keywords": ["机身铭牌"],
+    "history": []
+  },
+  {
+    "question": "显示器的游戏辅助包含哪些功能？",
+    "gold_keywords": ["游戏准星"],
+    "history": []
+  },
+  {
+    "question": "显示器的护眼模式如何开启？",
+    "gold_keywords": ["显示>护眼"],
+    "history": []
+  },
+  {
+    "question": "显示器的恢复出厂设置会怎样？",
+    "gold_keywords": ["删除您的所有个性化设置"],
+    "history": []
+  },
+  {
+    "question": "安装显示器底座支架前需要注意什么？",
+    "gold_keywords": ["无铁件"],
+    "history": []
+  },
+  {
+    "question": "指纹电源键可以实现什么功能？",
+    "gold_keywords": ["同时实现开机、解锁"],
+    "history": []
+  },
+  {
+    "question": "充电指示灯白色常亮表示什么？",
+    "gold_keywords": ["电池充满电"],
+    "history": []
+  },
+  {
+    "question": "如何将 F1、F2 键切换为功能键模式？",
+    "gold_keywords": ["按下Fn键"],
+    "history": []
+  },
+  {
+    "question": "触摸板三指向上滑动有什么作用？",
+    "gold_keywords": ["多任务视图"],
+    "history": []
+  },
+  {
+    "question": "触摸板双指上下滑动有什么作用？",
+    "gold_keywords": ["滚动浏览屏幕或文档"],
+    "history": []
+  },
+  {
+    "question": "计算机强制关机如何操作？",
+    "gold_keywords": ["长按电源键10秒以上"],
+    "history": []
+  },
+  {
+    "question": "扩展坞的 HDMI 和 VGA 接口能否同时使用？",
+    "gold_keywords": ["不能同时使用"],
+    "history": []
+  },
+  {
+    "question": "HUAWEI 蓝牙鼠标第二代最多支持连接几台设备？",
+    "gold_keywords": ["3台蓝牙设备"],
+    "history": []
+  },
+  {
+    "question": "蓝牙鼠标的指示灯红色闪烁表示什么？",
+    "gold_keywords": ["电池电量低"],
+    "history": []
+  },
+  {
+    "question": "计算机首次开机时必须做什么？",
+    "gold_keywords": ["连接电源适配器"],
+    "history": []
+  },
+  {
+    "question": "笔记本如何开启护眼模式？",
+    "gold_keywords": ["显示管理"],
+    "history": []
+  },
+  {
+    "question": "笔记本的摄像头有什么功能？",
+    "gold_keywords": ["人脸识别登录"],
+    "history": []
+  },
+  {
+    "question": "触摸板四指点击有什么作用？",
+    "gold_keywords": ["快速打开通知中心和日历"],
+    "history": []
+  },
+  {
+    "question": "开启护眼模式后屏幕会有什么变化？",
+    "gold_keywords": ["屏幕显示偏黄"],
+    "history": []
+  },
+  {
+    "question": "F10 一键恢复出厂会删除什么数据？",
+    "gold_keywords": ["删除C盘中数据"],
+    "history": []
+  },
+  {
+    "question": "F10 一键恢复出厂如何操作？",
+    "gold_keywords": ["连续快速点按F10"],
+    "history": []
+  },
+  {
+    "question": "使用设备时应与植入医疗设备保持多少距离？",
+    "gold_keywords": ["至少15厘米"],
+    "history": []
+  },
+  {
+    "question": "设备应在什么温度范围内使用？",
+    "gold_keywords": ["0℃～35℃"],
+    "history": []
+  },
+  {
+    "question": "它如何切换为功能键模式？",
+    "gold_keywords": ["Fn键指示灯"],
+    "history": [
+      {"role": "user", "content": "笔记本的 F1、F2 键默认是什么模式？"},
+      {"role": "assistant", "content": "计算机键盘的 F1、F2 等键默认为快捷键（热键）模式。"}
+    ]
+  },
+  {
+    "question": "它最多支持连接几台蓝牙设备？",
+    "gold_keywords": ["3台蓝牙设备"],
+    "history": [
+      {"role": "user", "content": "HUAWEI 蓝牙鼠标第二代怎么和计算机配对？"},
+      {"role": "assistant", "content": "首次使用鼠标需要与蓝牙设备配对连接，长按多设备切换按键进入配对状态。"}
+    ]
+  },
+  {
+    "question": "它的指示灯红色闪烁代表什么？",
+    "gold_keywords": ["电池电量低"],
+    "history": [
+      {"role": "user", "content": "蓝牙鼠标的 LED 指示灯有什么作用？"},
+      {"role": "assistant", "content": "蓝牙鼠标配有 LED 指示灯，用于提示鼠标状态。"}
+    ]
+  },
+  {
+    "question": "它如何强制关机？",
+    "gold_keywords": ["长按电源键10秒以上"],
+    "history": [
+      {"role": "user", "content": "计算机正常使用时如何关机？"},
+      {"role": "assistant", "content": "计算机正常使用时，点击开始菜单使计算机进入睡眠、关机或重启状态。"}
+    ]
+  },
+  {
+    "question": "它的 HDMI 和 VGA 接口能同时使用吗？",
+    "gold_keywords": ["不能同时使用"],
+    "history": [
+      {"role": "user", "content": "怎么通过扩展坞把计算机连接到电视或投影仪？"},
+      {"role": "assistant", "content": "通过扩展坞连接计算机和电视、显示器或投影仪，需要准备 HDMI 或 VGA 线缆。"}
+    ]
+  },
+  {
+    "question": "显示器支持通过哪些接口连接计算机？",
+    "gold_keywords": ["HDMI", "DP", "VGA"],
+    "history": []
+  },
+  {
+    "question": "笔记本触摸板支持哪些手势操作？",
+    "gold_keywords": ["单指点击", "双指上下滑动", "三指向上滑动"],
+    "history": []
+  },
+  {
+    "question": "笔记本键盘快捷键包含哪些功能？",
+    "gold_keywords": ["降低屏幕亮度", "开启或关闭静音", "切换屏幕投影模式"],
+    "history": []
+  },
+  {
+    "question": "华为设备关于电池有哪些安全要求？",
+    "gold_keywords": ["不可拆卸的内置电池", "请勿把电池扔到火里"],
+    "history": []
+  },
+  {
+    "question": "华为设备的环境保护要求是什么？",
+    "gold_keywords": ["请勿将本设备及其附件作为普通的生活垃圾处理"],
+    "history": []
+  },
+  {
+    "question": "标准支架版显示器支持高度调节吗？",
+    "gold_keywords": ["不支持高度调节"],
+    "history": []
+  },
+  {
+    "question": "拆卸标准支架版显示器的支架如何操作？",
+    "gold_keywords": ["快拆按钮"],
+    "history": []
+  },
+  {
+    "question": "旋转升降支架版显示器安装底座时如何操作？",
+    "gold_keywords": ["拧紧螺丝"],
+    "history": []
+  },
+  {
+    "question": "触摸板单指双击相当于什么操作？",
+    "gold_keywords": ["相当于双击鼠标左键"],
+    "history": []
+  },
+  {
+    "question": "触摸板双指张开或闭合有什么作用？",
+    "gold_keywords": ["放大或缩小图片"],
+    "history": []
+  },
+  {
+    "question": "触摸板三指向下滑动有什么作用？",
+    "gold_keywords": ["显示桌面"],
+    "history": []
+  },
+  {
+    "question": "触摸板三指左右滑动有什么作用？",
+    "gold_keywords": ["切换应用"],
+    "history": []
+  },
+  {
+    "question": "笔记本的隐藏式环境光传感器有什么作用？",
+    "gold_keywords": ["自动调节屏幕显示亮度"],
+    "history": []
+  },
+  {
+    "question": "摄像头指示灯白色常亮表示什么？",
+    "gold_keywords": ["摄像头开启"],
+    "history": []
+  },
+  {
+    "question": "笔记本键盘的 F1、F2 键默认是什么模式？",
+    "gold_keywords": ["默认为快捷键"],
+    "history": []
+  },
+  {
+    "question": "笔记本充电时，充电指示灯白色闪烁表示什么？",
+    "gold_keywords": ["白色闪烁表示正在充电"],
+    "history": []
+  },
+  {
+    "question": "给计算机充电时，关机或睡眠状态下有什么特点？",
+    "gold_keywords": ["充电速度更快"],
+    "history": []
+  },
+  {
+    "question": "连接计算机到电视或投影仪需要准备什么线缆？",
+    "gold_keywords": ["HDMI 或 VGA 连接线缆"],
+    "history": []
+  },
+  {
+    "question": "首次使用蓝牙鼠标需要完成什么？",
+    "gold_keywords": ["完成蓝牙鼠标与计算机的配对"],
+    "history": []
+  },
+  {
+    "question": "蓝牙鼠标安装什么型号的电池？",
+    "gold_keywords": ["一节 AA 电池"],
+    "history": []
+  },
+  {
+    "question": "台式机如何开启主机？",
+    "gold_keywords": ["短按计算机主机的电源键"],
+    "history": []
+  },
+  {
+    "question": "台式机的键盘如何切换为功能键模式？",
+    "gold_keywords": ["按下Fn键"],
+    "history": []
+  },
+  {
+    "question": "清洁设备应该使用什么？",
+    "gold_keywords": ["清洁、干燥的软布"],
+    "history": []
+  },
+  {
+    "question": "设备进水或有异物进入时应该怎么办？",
+    "gold_keywords": ["立刻停止使用并断开电源"],
+    "history": []
+  },
+  {
+    "question": "使用设备时手部不适应该怎么办？",
+    "gold_keywords": ["停止使用并咨询医师"],
+    "history": []
+  },
+  {
+    "question": "雷雨天气应该注意什么？",
+    "gold_keywords": ["雷电天气请断开电源"],
+    "history": []
+  },
+  {
+    "question": "使用未经认可或不兼容的电源可能有什么危险？",
+    "gold_keywords": ["引发火灾、爆炸"],
+    "history": []
+  },
+  {
+    "question": "请勿让儿童或宠物对设备做什么？",
+    "gold_keywords": ["吞咬设备或其配件"],
+    "history": []
+  },
+  {
+    "question": "使用耳机时建议使用什么音量？",
+    "gold_keywords": ["音乐或通话所需的最小音量"],
+    "history": []
+  },
+  {
+    "question": "请勿将设备靠近什么热源？",
+    "gold_keywords": ["裸露的火源"],
+    "history": []
+  }
+]
